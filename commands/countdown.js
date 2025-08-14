@@ -82,10 +82,10 @@ module.exports = {
             // So to start from number X, we need to skip (60 - X) seconds
             const startTime = 60 - countdownNumber;
             
-            // Create audio resource with improved seeking
+            // Create audio resource with FFmpeg seeking for more reliable seeking
             const resource = createAudioResource(audioPath, {
                 inputType: 'arbitrary',
-                seek: startTime,
+                encoderArgs: ['-ss', startTime.toString()],
                 metadata: { title: `Countdown from ${countdownNumber}` }
             });
 
