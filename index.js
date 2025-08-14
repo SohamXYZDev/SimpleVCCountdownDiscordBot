@@ -1,4 +1,4 @@
-const { Client, Collection, GatewayIntentBits } = require('discord.js');
+const { Client, Collection, GatewayIntentBits, ActivityType } = require('discord.js');
 require('dotenv').config();
 
 const fs = require('node:fs');
@@ -34,6 +34,9 @@ for (const file of commandFiles) {
 // When the client is ready, run this code (only once)
 client.once('ready', () => {
     console.log(`Ready! Logged in as ${client.user.tag}`);
+    
+    // Set the bot's activity status
+    client.user.setActivity('Anime', { type: ActivityType.Watching });
 });
 
 // Handle slash command interactions
