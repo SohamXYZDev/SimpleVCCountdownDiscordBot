@@ -7,16 +7,22 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('countdown')
         .setDescription('Start a countdown with audio in the voice channel')
-        .addIntegerOption(option =>
-            option.setName('number')
-                .setDescription('Number to countdown from (5-60)')
+        .addStringOption(option =>
+            option.setName('duration')
+                .setDescription('Select countdown duration')
                 .setRequired(true)
-                .setMinValue(5)
-                .setMaxValue(60)
+                .addChoices(
+                    { name: '10 seconds', value: '10' },
+                    { name: '20 seconds', value: '20' },
+                    { name: '30 seconds', value: '30' },
+                    { name: '40 seconds', value: '40' },
+                    { name: '50 seconds', value: '50' },
+                    { name: '60 seconds', value: '60' }
+                )
         ),
     
     async execute(interaction) {
-        const countdownNumber = interaction.options.getInteger('number');
+        const countdownDuration = interaction.options.getString('duration');
         
         // Check if user is in a voice channel
         const voiceChannel = interaction.member.voice.channel;
@@ -36,7 +42,7 @@ module.exports = {
             });
         }
 
-        await interaction.reply(`Starting countdown from ${countdownNumber}! 🎯`);
+        await interaction.reply(`Starting ${countdownDuration} second countdown! 🎯`);
 
         try {
             // Check for existing voice connection first
@@ -66,31 +72,22 @@ module.exports = {
             });
             connection.subscribe(player);
 
-            // Path to the single countdown file
-            const audioPath = path.join(__dirname, '..', 'countdown_audio', 'countdown.mp4');
+            // Path to the specific countdown file
+            const audioPath = path.join(__dirname, '..', 'countdown_audio', `countdown${countdownDuration}.mp4`);
             
             // Check if audio file exists
             if (!fs.existsSync(audioPath)) {
                 return await interaction.followUp({
-                    content: 'Countdown audio file not found!',
+                    content: `Countdown${countdownDuration}.mp4 audio file not found!`,
                     ephemeral: true
                 });
             }
 
-            // Calculate starting position in the audio file
-            // Assuming the audio counts from 60 to 1, and each number takes ~1 second
-            // So to start from number X, we need to skip (60 - X) seconds
-            const startTime = 60 - countdownNumber;
-            
-            console.log(`Starting countdown from ${countdownNumber}, seeking to ${startTime} seconds`);
-            
-            // Create audio resource with multiple seeking approaches
+            // Create audio resource - no seeking needed since each file is complete
             const resource = createAudioResource(audioPath, {
                 inputType: 'arbitrary',
                 inlineVolume: true,
-                inputArgs: ['-ss', startTime.toString()],
-                encoderArgs: ['-af', 'volume=1.0'],
-                metadata: { title: `Countdown from ${countdownNumber}` }
+                metadata: { title: `${countdownDuration} second countdown` }
             });
 
             // Add error handling for the player
