@@ -62,7 +62,7 @@ module.exports = {
 
         // Check bot permissions
         const permissions = voiceChannel.permissionsFor(interaction.client.user);
-        if (!permissions.has('CONNECT') || !permissions.has('SPEAK')) {
+        if (!permissions.has('Connect') || !permissions.has('Speak')) {
             return await interaction.reply({
                 content: 'I need permission to connect and speak in your voice channel!',
                 ephemeral: true
@@ -157,7 +157,7 @@ module.exports = {
 
         // Check bot permissions
         const permissions = voiceChannel.permissionsFor(interaction.client.user);
-        if (!permissions.has('CONNECT') || !permissions.has('SPEAK')) {
+        if (!permissions.has('Connect') || !permissions.has('Speak')) {
             return await interaction.reply({
                 content: 'I need permission to connect and speak in your voice channel!',
                 ephemeral: true
