@@ -100,20 +100,12 @@ module.exports = {
             connection.subscribe(player);
 
             // Path to the specific countdown file
-            let audioPath;
-            if (countdownDuration === '60') {
-                // For 60 seconds, use the main countdown.mp4 file
-                audioPath = path.join(__dirname, '..', 'countdown_audio', 'countdown.mp4');
-            } else {
-                // For other durations, use countdown{duration}.mp4
-                audioPath = path.join(__dirname, '..', 'countdown_audio', `countdown${countdownDuration}.mp4`);
-            }
+            const audioPath = path.join(__dirname, '..', 'countdown_audio', `${countdownDuration}SecondHaloCD.mp4`);
             
             // Check if audio file exists
             if (!fs.existsSync(audioPath)) {
-                const fileName = countdownDuration === '60' ? 'countdown.mp4' : `countdown${countdownDuration}.mp4`;
                 return await interaction.followUp({
-                    content: `${fileName} audio file not found!`,
+                    content: `${countdownDuration}SecondHaloCD.mp4 audio file not found!`,
                     ephemeral: true
                 });
             }
